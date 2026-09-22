@@ -62,6 +62,10 @@ async def get_exchange_rate(base: str = "USD", quote: str = "CNY") -> str:
         if rate is None:
             return f"不支援的幣別組合：{base} → {quote}"
         return f"1 {base.upper()} = {rate} {quote.upper()}（資料日 {data['date']}）"
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code == 404:
+            return f"不支援的幣別（{base} 或 {quote}）"
+        return f"匯率查詢失敗（HTTP {e.response.status_code}）：{e}"
     except httpx.HTTPError as e:
         return f"匯率查詢失敗（{type(e).__name__}）：{e}"
 
