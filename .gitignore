@@ -1,0 +1,23 @@
+# Secrets
+.env
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Test / tooling caches
+.pytest_cache/
+.ruff_cache/
+
+# MCP server child-process logs (PythonStdioTransport log_file=)
+mcp_servers/*.log
+
+# Agent scratch output
+notes/

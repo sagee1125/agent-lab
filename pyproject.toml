@@ -1,0 +1,31 @@
+[project]
+name = "agent-lab"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "sa1jing", email = "sa1jing.chen@polyu.edu.hk" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.141.1",
+    "fastmcp>=4.0.5",
+    "httpx>=0.28.1",
+    "openai>=3.14.1",
+    "pydantic>=2.13.5",
+    "python-dotenv>=1.2.3",
+    "truststore>=0.10.4",
+    "tzdata>=2026.4",
+    "uvicorn[standard]>=0.53.0",
+]
+
+
+[build-system]
+requires = ["uv_build>=0.12.14,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.7",
+]
