@@ -2,11 +2,29 @@ import os
 from pathlib import Path
 
 from fastmcp import FastMCP
+from fastmcp.exceptions import ToolError
 
 ROOT = Path(__file__).resolve().parent.parent
 
-SKIP_DIRS = {".venv", ".git", "__pycache__", ".pytest_cache", ".ruff_cache", "node_modules"}
-TEXT_SUFFIXES = {".py", ".md", ".toml", ".txt", ".json", ".yaml", ".yml", ".cfg", ".ini"}
+SKIP_DIRS = {
+    ".venv",
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    ".ruff_cache",
+    "node_modules",
+}
+TEXT_SUFFIXES = {
+    ".py",
+    ".md",
+    ".toml",
+    ".txt",
+    ".json",
+    ".yaml",
+    ".yml",
+    ".cfg",
+    ".ini",
+}
 DENY_NAMES = {".env", ".env.local", "credentials.json", "id_rsa", "id_ed25519"}
 DENY_SUFFIXES = {".key", ".pem", ".pfx", ".p12"}
 MAX_HITS = 50
@@ -22,9 +40,9 @@ def _resolve(path: str) -> Path:
     """把相對路徑解析成 ROOT 底下的絕對路徑；越界或敏感檔案一律拒絕。"""
     target = (ROOT / path).resolve()
     if not target.is_relative_to(ROOT):
-        raise ValueError(f"拒絕存取工作區以外的路徑：{path}")
+        raise ToolError(f"拒絕存取工作區以外的路徑：{path}")
     if _is_denied(target):
-        raise ValueError(f"拒絕存取敏感檔案：{path}")
+        raise ToolError(f"拒絕存取敏感檔案：{path}")
     return target
 
 
@@ -86,5 +104,8 @@ def search_content(keyword: str, path: str = ".") -> str:
     return "\n".join(hits) if hits else f"沒有找到「{keyword}」"
 
 
+# if __name__ == "__main__":
+#     mcp.run()
+
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run(transport="http", host="127.0.0.1", port=8000)
