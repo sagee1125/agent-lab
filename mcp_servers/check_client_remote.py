@@ -1,19 +1,26 @@
+"""連到部署在 Prefect Horizon 上的 web_server，列出工具並各打一次。
+
+    uv run python mcp_servers/check_client_remote.py
+
+第一次跑會開瀏覽器要你授權；token 由 agent_lab.mcp_auth 加密存到磁碟，
+之後就靜默通過。
+
+（曾經用 KeyringStore 走 Windows 認證管理員，但單筆憑證上限 2560 bytes、
+ keyring 又用 UTF-16 存 —— 等於只能放 1280 個字元，OAuth token 一定爆，
+ 會回 WinError 1783 CredWrite。詳見 src/agent_lab/mcp_auth.py。）
+"""
+
 import asyncio
 
 from fastmcp import Client
-from fastmcp.client.auth import OAuth
-from key_value.aio.stores.keyring import KeyringStore
+
+from agent_lab.mcp_auth import make_oauth
 
 URL = "https://agent-lab-web.fastmcp.app/mcp"
 
-# auth="oauth" 預設只把 token 存在記憶體，進程一結束就沒了 —— 每次跑都要重開瀏覽器授權。
-# 傳一個 token_storage 才會持久化；KeyringStore 走 Windows 認證管理員（WinVaultKeyring），
-# 由作業系統加密保存，不需要自己管金鑰。
-oauth = OAuth(token_storage=KeyringStore(service_name="agent-lab"))
-
 
 async def main() -> None:
-    async with Client(URL, auth=oauth) as c:
+    async with Client(URL, auth=make_oauth()) as c:
         tools = await c.list_tools()
         print("tools:", [t.name for t in tools])
 
