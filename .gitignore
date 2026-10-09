@@ -21,3 +21,7 @@ mcp_servers/*.log
 
 # Agent scratch output
 notes/
+
+
+# LangGraph checkpoints (WAL 會產生 -wal/-shm)
+checkpoints.db*
